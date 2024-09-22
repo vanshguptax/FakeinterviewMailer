@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Interview Email Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-blue-200 to-blue-400 p-4 sm:p-8 flex flex-col">
+    <div class="max-w-4xl mx-auto flex-grow">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-6">Fake Interview Email Generator</h1>
+        <div class="flex flex-col gap-4">
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">Fill in the Details</h2>
+                <form id="emailForm" class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="name" class="block text-gray-700 font-semibold">Your Name</label>
+                        <input type="text" id="name" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="company" class="block text-gray-700 font-semibold">Company Name</label>
+                        <input type="text" id="company" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="position" class="block text-gray-700 font-semibold">Position Applied For</label>
+                        <input type="text" id="position" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="date" class="block text-gray-700 font-semibold">Interview Date</label>
+                        <input type="date" id="date" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="time" class="block text-gray-700 font-semibold">Interview Time</label>
+                        <input type="time" id="time" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="email" class="block text-gray-700 font-semibold">Your Email</label>
+                        <input type="email" id="email" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200 text-lg">Generate Email</button>
+                </form>
+            </div>
+
+            <div id="emailPreview" class="bg-white p-4 sm:p-6 rounded-lg shadow-md hidden">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">Generated Email Content</h2>
+                <textarea id="emailContent" readonly class="w-full h-48 sm:h-56 p-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"></textarea>
+                <div class="flex flex-col sm:flex-row justify-between mt-4 gap-2 sm:gap-4">
+                    <button id="copyButton" class="flex-1 bg-green-600 text-white p-3 rounded-md hover:bg-green-700 transition duration-200 flex items-center justify-center text-lg">
+                        <i data-lucide="copy" class="w-5 h-5 mr-2"></i>
+                        Copy to Clipboard
+                    </button>
+                    <button id="sendButton" class="flex-1 bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200 flex items-center justify-center text-lg">
+                        <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                        Open in Email Client
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-4 text-center text-gray-600 text-sm">
+            * This tool is for fun and should not be used for unethical purposes.
+        </p>
+    </div>
+
+    <footer class="mt-8 text-center text-gray-600 text-sm">
+        <p>&copy; 2024 <a href="#" class="text-blue-600 hover:underline">Vansh Gupta</a>. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            const emailForm = document.getElementById('emailForm');
+            const emailPreview = document.getElementById('emailPreview');
+            const emailContent = document.getElementById('emailContent');
+            const copyButton = document.getElementById('copyButton');
+            const sendButton = document.getElementById('sendButton');
+
+            emailForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const company = document.getElementById('company').value;
+                const position = document.getElementById('position').value;
+                const date = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+
+                const content = `Subject: Interview Invitation for ${position} at ${company}
+
+Dear ${name},
+
+We are pleased to inform you that you have been invited for an interview for the position of ${position} at ${company}. The interview is scheduled for ${date} at ${time}.
+
+We look forward to discussing your qualifications and experience for this role. Please confirm your availability for this interview.
+
+If you need to reschedule or have any questions, please don't hesitate to contact us.
+
+Best regards,
+The Hiring Team at ${company}`;
+
+                emailContent.value = content;
+                emailPreview.classList.remove('hidden');
+                emailPreview.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            copyButton.addEventListener('click', function() {
+                emailContent.select();
+                document.execCommand('copy');
+                alert('Email content copied to clipboard!');
+            });
+
+            sendButton.addEventListener('click', function() {
+                const subject = encodeURIComponent(emailContent.value.split('\n')[0].replace('Subject: ', ''));
+                const body = encodeURIComponent(emailContent.value.split('\n').slice(1).join('\n'));
+                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            });
+        });
+    </script>
+</body>
+</html>
